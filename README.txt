@@ -1,4 +1,4 @@
-# ./Dialogical/README.md
+# ./Dialogical/README.txt
 
 # ./Dialogical/zanax_DOC.dir/index.html
 
