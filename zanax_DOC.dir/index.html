@@ -1,0 +1,800 @@
+<!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!--
+
+Generated from index.tex by tex2page, v 20130325
+(running on Racket 5.92, :unix), 
+(c) Dorai Sitaram, 
+http://www.ccs.neu.edu/~dorai/tex2page/index.html
+
+-->
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>
+Interaction and Negotiation inLearning and Understanding Dialog
+</title>
+<link rel="stylesheet" type="text/css" href="index.css" title=default>
+<meta name=robots content="index,follow">
+</head>
+<body>
+<div id=slidetitle>
+<div align=right class=navigation></div>
+<p>
+
+
+</p>
+<p>
+</p>
+<p>
+
+
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+
+
+
+</p>
+<p>
+
+
+
+
+
+
+
+
+
+</p>
+<p>
+
+
+
+</p>
+<p>
+
+
+
+
+</p>
+<p>
+
+
+
+</p>
+<p>
+<script src="http://www.apple.com/library/quicktime/scripts/ac_quicktime.js" 
+   language="JavaScript" type="text/javascript"></script>
+<script src="http://www.apple.com/library/quicktime/scripts/qtp_library.js"
+   language="JavaScript" type="text/javascript"></script>
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+</p>
+<p>
+</p>
+<h1 class=title>Interaction and Negotiation in<br>Learning and Understanding Dialog</h1>
+<p></p>
+<div align=center>
+Tom Dean (<tt>tld@google.com</tt>) with a lot of help from my friends<a name="node_call_footnote_Temp_1"></a><sup><small><a href="#node_footnote_Temp_1">1</a></small></sup><p></p>
+</div>
+<p></p>
+<p>
+</p>
+<blockquote><div align=center>&nbsp;<strong>Abstract</strong>&nbsp;</div>
+<p>
+Interaction and negotiation are an essential component of natural language understanding in conversation. We argue this is particularly the case in building artificial agents that rely primarily on language to interact with humans. Rather than thinking about misunderstanding&#8212;thinking the user said one thing when he said another&#8212;and non-understanding&#8212;not having a clue what the user was talking about&#8212;as a problem to be overcome, it makes more sense to think of such events as opportunities to learn something and a natural part of understanding that becomes essential when the agent trying to understand has a limited language understanding capability. Moreover, many of the same strategies that are effective in situations in which the agent&rsquo;s limited language facility fails also apply to the agent actively engaging the user in an unobtrusive manner to collect data and ground truth in order to extend its repertoire of services that it can render and to improve its existing language understanding capabilities. In the case of developing an agent to engage users in conversations about music, actively soliciting information from users about their music interests and resolving misunderstandings on both sides about what services the application can offer and what service in particular the user wants now is already a natural part of the conversation. Data collected from thousands or millions of users would provide an invaluable resource for training NLP components that could be used to build more sophisticated conversational agents.
+</p>
+</blockquote><p>
+</p>
+<a name="node_sec_Temp_2"></a>
+<h1 class=section>Building Conversational Agents</h1>
+<p>The Zinn Project aims to develop a chatterbot capable of sustained conversation about a single topic such as popular music. I purposefully used the deprecatory term &lsquo;&lsquo;chatterbot&rsquo;&rsquo; to emphasize that, while we aspire to build an agent that is relatively adept at conversing in natural language, we have no pretensions that such an agent&#8212;call it &lsquo;&lsquo;Zinn&rsquo;&rsquo;&#8212;will <i>understand</i> the conversation in any but the most shallow sense of the word. We do, however, aspire to having Zinn perform <i>as if</i> it understands most of the time, and thus is able to deliver value in an engaging conversational manner. </p>
+<p>
+Like most chatterbots, Zinn relies on keyword spotting&#8212;scanning user input searching for words that might provide clues as to the user&rsquo;s intentions.  We use relatively sophisticated methods for spotting keywords including Google NLP technology based on deep networks.  What distinguishes Zinn from other chatterbots is that, if Zinn can&rsquo;t find evidence to support an hypothesis about the user&rsquo;s current intention by scanning the last few utterances, then Zinn enlists the user&rsquo;s help in a side conversation with the express purpose of resolving the underlying ambiguity. </p>
+<p>
+This reliance on interactive understanding is potentially Zinn&rsquo;s most important contribution in terms of generally useful technology.  In point of fact, it&rsquo;s not a new idea; researchers have long understood that exchanging information is inherently interactive if the two parties involved in the exchange are not essentially equal to begin with, in which case, what&rsquo;s the point?  In order to understand what the user is saying, Zinn relies on the user to help it out by answering questions and supplying additional information as required for Zinn to do its job.  </p>
+<p>
+Engaging the user to help avoid or recover from errors in understanding has an additional benefit that is critical to the longer term goals of the Zinn Project, namely, many of strategies that work for dealing with misunderstanding, also work to learn about colloquial dialog. If Zinn doesn&rsquo;t understand something the user said, it can ask for a paraphrase. If it has two or more hypotheses, it can ask the user to pick one. If Zinn thinks the user might be asking it to play a song by a particular artist, it can ask if this is the correct interpretation, or start playing the music and see if the user protests.</p>
+<p>
+Launching Zinn as a music entertainment application is the first step in building more sophisticated agents that rely language models trained on extensive logs of users interacting with simpler agents like the first instantiations of Zinn. Even our first instantiation will depend on massive amounts of music and dialog data mined from news, books, interviews and technical-help chat logs. The size of this data is in the billions of words, but much of it is not well aligned with the music application and billions of words doesn&rsquo;t begin to do justice to the diversity of human language generation. </p>
+<p>
+We are in the process of building an end-to-end music application. The actual delivery of music content will be limited and not as nuanced as we might like&#8212;we are engineers, not user-experience experts. However, if we are successful, we will have demonstrated that our approach can enhance the language understanding technologies that define the state of the art in dialog systems. This document introduces the basic strategies for resolving ambiguity and recovering from failures in understanding. The accompanying Python code illustrates how these strategies can be realized in a simple planning system. </p>
+<p>
+We will also argue that the various components of the error handling sub system provide solutions to three other problems in developing dialog systems. First, the same components used to solicit clues pertaining to the user&rsquo;s intent can be used to evaluate Zinn&rsquo;s performance as a natural part of conversation. Second, such feedback can serve as a reward signal for reinforcement learning, some form of which will be needed to scale any existing application. Finally, Zinn can elicit the ground truth necessary to train deep and recurrent networks for generating proposals to help Zinn dealing with novel input.</p>
+<p>
+</p>
+<a name="node_sec_Temp_3"></a>
+<h1 class=section>Natural Language Generation</h1>
+<p>We&rsquo;ll begin the discussion by considering one of most overlooked and under-appreciated challenges in building dialog systems, namely natural language generation (NLG). While it is easy to generate basic responses by instantiating variables in predefined patterns, obviously &lsquo;&lsquo;canned&rsquo;&rsquo; responses wear thin in short order, and, with a little more thought, the dialog-system developer can substantially improve the user experience by producing more natural, contextually-aware responses. Next we consider the special case of natural language understanding (NLU) typically faced by a dialog system that need only know about a very limited domain of discourse. In each case, we introduce simple NLP technology that supports some degree of application dependence, while allowing the error handling sub system to be relatively domain independent. Last, we consider tools from automated planning to expedite the development of modular dialog components. </p>
+<p>
+</p>
+<a name="node_sec_Temp_4"></a>
+<h2 class=section>Traditional Schema Support</h2>
+<p>Schema represented as strings with schema variables and coupled with variable bindings are the mainstay of simple most chatterbot applications:</p>
+<p>
+</p>
+<blockquote> <tt>&gt;&gt; instantiate(&quot;Am I right that you like $genre?&quot;, {&rsquo;genre&rsquo;:&rsquo;jazz})<br>
+Am I right that you like jazz?<br>
+</tt></blockquote><p>
+To add variety to generated dialog, we use lists of strings representing linguistic variation but conveying the same general meaning called <i>variants</i>.</p>
+<p>
+</p>
+<a name="node_sec_Temp_5"></a>
+<h2 class=section>Programmable Linguistic Variation</h2>
+<p>Variants are registered in a dictionary and identified by keywords corresponding to strings consisting of uppercase letters and underscores (<tt>[A-Z_]*</tt>), e.g., <tt>IS_IT_SO</tt>.
+The strings that comprise a variant can be full sentences or common / idiomatic sentence fragments that can be used effectively as &lsquo;&lsquo;subroutines&rsquo;&rsquo; in generating dialog-appropriate language:</p>
+<p>
+</p>
+<blockquote> <tt>&gt;&gt; variant(&rsquo;IS_IT_SO&rsquo;,[&quot;am I right that&quot;,&quot;is it the case&quot;])<br>
+&gt;&gt; expand(&quot;IS_IT_SO you like $genre?&quot;, {&rsquo;genre&rsquo;:&rsquo;jazz})<br>
+Is it the case you like jazz?<br>
+</tt></blockquote><p>
+The function <tt>expand</tt> splits its first argument into tokens separated by white space so that <tt>&quot;IS_IT_SO you like $genre?&quot;</tt> is analyzed as the list of tokens <tt>[&quot;IS_IT_SO&quot;,&quot;you&quot;,&quot;like&quot;,&quot;$genre?&quot;]</tt>. Each token in the list is checked to see if it corresponds to a keyword in the variant registry, variable substitutions are made using <tt>instantiate</tt>, and additional transformations are applied recursively as needed.</p>
+<p>
+The strings that comprise the list of syntactic variations associated with a given keyword can contain additional variant keywords. When a variant keyword is encountered, we choose a random selection from the variant&rsquo;s list of linguistic variations, apply <tt>expand</tt> recursively, and then substitute the result for the keyword in the expanded input that we started with.  You can also embed lists of syntactic variations directly in a string:</p>
+<p>
+</p>
+<blockquote> <tt>&gt;&gt; expand(&quot;IS_IT_SO [&rsquo;that&rsquo;,&rsquo;&rsquo;] you like $genre?&quot;, {&rsquo;genre&rsquo;:&rsquo;jazz})<br>
+Is it the case you like jazz?<br>
+&gt;&gt; expand(&quot;IS_IT_SO [&rsquo;that&rsquo;,&rsquo;&rsquo;] you like $genre?&quot;, {&rsquo;genre&rsquo;:&rsquo;jazz})<br>
+Am I right that you like jazz?<br>
+</tt></blockquote><p>
+Once a string is completely expanded having applied all transformations and made all substitutions, the resulting list of tokens is used to produce to a single string capitalizing words at the beginning of sentences and adding punctuation as needed. 
+There is no pretense that the resulting strings do justice to the richness of natural language, but the options available to the dialog developer allow for a reasonable degree of variability with a modicum of programming complexity. </p>
+<p>
+</p>
+<a name="node_sec_Temp_6"></a>
+<h2 class=section>Simple Word Agreement</h2>
+<p>Linguistic variants can be extended to support simple sorts of local syntactic or semantic agreement. For example, number agreement can be implemented in an ad hoc manner as shown in the following example:</p>
+<p>
+</p>
+<blockquote> <tt>&gt;&gt; variant(&rsquo;IS_OR_ARE&rsquo;, {&rsquo;function&rsquo;:is_or_are,&rsquo;arguments&rsquo;:[&rsquo;$slots&rsquo;]})<br>
+&gt;&gt; slots = [&rsquo;artist&rsquo;]<br>
+&gt;&gt; expand(&rsquo;The $slots IS_OR_ARE filled.&rsquo;,&rsquo;slots&rsquo;:join(slots,&rsquo;and&rsquo;))<br>
+The artist slot is filled.<br>
+&gt;&gt; slots = [&rsquo;artist&rsquo;,&rsquo;album&rsquo;,&rsquo;genre&rsquo;]<br>
+&gt;&gt; expand(&rsquo;The $slots IS_OR_ARE filled.&rsquo;,&rsquo;slots&rsquo;:join(slots,&rsquo;and&rsquo;))<br>
+The artist, album and genre slots are filled.<br>
+</tt></blockquote><p>
+Obviously this could be extended handle a wider range of cases without necessarily solving the general problem, which is rife with edge cases in a language like English. Gender pronoun agreement can be finessed for entities in the Knowledge Graph or when a given (first) name is provided that is common enough to be included in lists for naming baby girls and boys and the given name of the person in question is in accord with common practice:</p>
+<p>
+</p>
+<blockquote> <tt>&gt;&gt; variant(&rsquo;HIS_OR_HER&rsquo;,&rsquo;{&rsquo;function&rsquo;:his_or_her,&rsquo;arguments&rsquo;:[&rsquo;$entity&rsquo;]})<br>
+&gt;&gt; bdgs = {&rsquo;entity&rsquo;:&rsquo;Michael Jackson&rsquo;,&rsquo;song&rsquo;:&rsquo;Thriller&rsquo;}<br>
+&gt;&gt; expand(&quot;You mentioned $entity. Do you like HIS_OR_HER song $song&quot;,bdgs)<br>
+&gt;&gt; You mentioned Michael Jackson. Do you like his song Thriller?<br>
+&gt;&gt; bdgs = {&rsquo;entity&rsquo;:&rsquo;Adele Adkins&rsquo;,&rsquo;song&rsquo;:&rsquo;Skyfall&rsquo;}<br>
+&gt;&gt; expand(&quot;You mentioned $entity. Do you like HIS_OR_HER song $song&quot;,bdgs)<br>
+&gt;&gt; You mentioned Adele Adkins. Do you like her song Skyfall?<br>
+</tt></blockquote><p>
+</p>
+<a name="node_sec_Temp_7"></a>
+<h2 class=section>Domain Specific Language Payloads</h2>
+<p>One of our goals in building modular dialog systems with components that can be used in multiple application-specific products is to design domain-independent, function-specific components that can be reused or easily customized to work with modules that require application-specific dialog.  Some degree of customization is possible in the form of linguistic variants that enhance or replace variants at the module or sub module level. Another approach is to build modules that define a default&#8212;preferably domain-independent&#8212;collection of variants, but allow substitutions from other modules at the level of particular invocations, e.g., the called module has a default of the form of the generic <tt>&quot;I didn&rsquo;t understand what you said.&quot;</tt> and the calling module supplies a domain-specific substitution <tt>&quot;I didn&rsquo;t catch you mention an artist or genre.&quot;</tt>.
+We support this sort of interface between a called and calling module by introducing the notion of a domain-specific <i>payload</i> that provides application-relevant language substitutions at the level of specific instances of dialog language generation. Here&rsquo;s a simple payload that a music discovery dialog module might share with a general-purpose error recovery module that attempts to recover when the calling module recognizes that it has failed in an attempt to solicit information from the user to fill a slot in a schema: 
+</p>
+<pre class=verbatim>payload('called':'recover',
+        'caller':'music',
+        'select':{'leader':&quot;I didn't catch mention of any music.&quot;,
+                  'prompt':&quot;What music would you like to hear?&quot;})
+</pre><p>
+A payload is primarily a dictionary with keys corresponding to specific instances of dialog language generation within the called module that are mapped to linguistic variants where in the above example we show the simplest case of a single response string. There is a registry for payloads so that all the called module needs to know is the name of the calling module. Here&rsquo;s a code fragment from a sub module of a misunderstanding mitigation and recovery module:
+</p>
+<pre class=verbatim>def recover_slots_m(state, slots, caller=None):
+    if caller:
+        payload = get_payload[caller]['recover']
+    else:
+        payload = get_payload['default']['recover']
+    # normalize and expand aliases in the list of slots.
+    slots = complete(slots)
+    # check to see if the slots have already been filled. 
+    unfilled = [slot for slot in slots if not state.var['premise'][slot]]
+    if not unfilled:
+        return []
+    else:
+        # start with a leader describing the situation.
+        interject(payload['select']['leader'))
+        # then prompt the user for whatever is required.
+        input = interact(payload['select']['prompt'))
+        # see if user input could be used to fill slots.
+        matches = match(input)
+        ...
+</pre><p>
+Building modules that can maintain their separation, play nicely together and not introduce too much complexity in the resulting code is difficult to say the least. Building a system with natural dialog and good coverage is hard enough on its own. </p>
+<p>
+</p>
+<a name="node_sec_Temp_8"></a>
+<h1 class=section>Natural Language Understanding</h1>
+<p>Our approach to natural language understanding (NLU) is&#8212;like our approach to NLG&#8212;a study in compromise, working hard to find a middle ground between the simple chatterbot and a&#8212;yet to be realized&#8212;full AI-complete solution capable of passing itself off as a human. The two main threads of our solution consist of (a) extensions of simple keyword and sentiment spotting designed to expand and smooth out the relevant lexical space, and (b) error mitigation and recovery in which we view the process of understanding as a dialog in which we work with the user to narrow down the meaning of user input sufficiently to provide value, e.g., play music that the user enjoys.</p>
+<p>
+</p>
+<a name="node_sec_Temp_9"></a>
+<h2 class=section>Robust Keyword Spotting</h2>
+<p>There are obvious things that are just too easy and useful to ignore: robust, precisely-targeted matching employs sets of words and phrases that express certain categories, including but not limited to the following:
+</p>
+<ul>
+<li><p>positive and negative affect&#8212;does the user&rsquo;s response indicate that whatever she&rsquo;s talking about she seems to be positively (negatively) disposed toward it, e.g., &lsquo;&lsquo;I love the Beatles&rsquo;&rsquo; or &lsquo;&lsquo;I can&rsquo;t stand pop music&rsquo;&rsquo;;
+</p>
+<li><p>quantification&#8212;does her response indicate a universal, e.g., &lsquo;&lsquo;I like all music by Adelle&rsquo;&rsquo;, existential, e.g., &lsquo;&lsquo;I like some jazz trumpet&rsquo;&rsquo;, or blanket rejection, e.g., &lsquo;&lsquo;Don&rsquo;t ever play anything by her again&rsquo;&rsquo;;
+</p>
+<li><p>words indicating order or numbers that could refer to an entity introduced earlier or an item in a list offered to the user for her selection, e.g., &lsquo;&lsquo;Who sang that last song&rsquo;&rsquo;,&lsquo;&lsquo;2&rsquo;&rsquo;, &lsquo;&lsquo;I&rsquo;ll take the second one&rsquo;&rsquo; and &lsquo;&lsquo;How about the fourth&rsquo;&rsquo;;
+</p>
+</ul><p>
+The simplest approach is to generate a set of words for each distinct concept and then search for similar words in the user&rsquo;s input. Similarity might be measured using edit distance&#8212;using Levenshtein&rsquo;s algorithm, or cosine similarity&#8212;using embedding spaces and nearest-neighbor search, or special-purpose classifiers&#8212;using DNNs and RNNs for sentiment-analysis. So-called similar word expansion and re-weighting (SWEAR) methods like nearest-neighbor search in a vector-space embedding model are now commonly used in information retrieval applications. We are also looking at semi-supervised, multi-class learning approaches using label amplification by semantic similarity (LASS) for mapping utterances to specific services&#8212;&lsquo;&lsquo;play the latest song by Adele&rsquo;&rsquo; or &lsquo;&lsquo;find a video of Michael Jackson singing Thriller in concert&rsquo;&rsquo;&#8212;the dialog system is able to provide to the user. </p>
+<p>
+</p>
+<a name="node_sec_Temp_10"></a>
+<h1 class=section>Collaborative Language Understanding</h1>
+<p>Robust keyword spotting is a powerful method for understanding user intent&#8212;though &lsquo;&lsquo;guessing&rsquo;&rsquo; is a more accurate description of what the system is actually doing. But no matter how effective these methods are in dealing with the most common sort of user input, they inevitably fall short in dealing with more complicated and ambiguous locutions. Our fallback strategy is to engage the user and entice him or her to assist us: if you don&rsquo;t understand what someone is saying to you, ask them to repeat, rephrase, confirm or deny what you thought they said; clarify some particular aspect of what they said; select from two or more interpretations you&rsquo;re entertaining, or proceed as if you knew what they were talking about and count on them to correct you if you&rsquo;ve misunderstood. We do it so often in everyday conversation that we take it for granted, and the interactive, conversational aspect of understanding is all too often overlooked.</p>
+<p>
+</p>
+<a name="node_sec_Temp_11"></a>
+<h2 class=section>Hierarchical Task Networks for Dialog</h2>
+<p>In the previous section we talked about modules and sub modules without any detailed description of what they are or how they&rsquo;re implemented. In this section, we&rsquo;ll define a module as a hierarchical network&#8212;directed acyclic graph&#8212;of <i>tasks</i> related to one another in that if there is an edge from task <em>A</em> to task <em>B</em> in the graph then <em>B</em> is said to be a sub task of <em>A</em>. The tasks in the network are further organized in terms of <i>expansions</i> so that a task <em>A</em> is mapped to&#8212;or <i>expanded</i> into&#8212;a partially ordered set of its subtasks <em>P</em> referred to as a <i>plan</i> for carrying out <em>A</em>. Intuitively, if <em>P</em>  =  {<em>S</em><sub>1</sub>,<em>S</em><sub>2</sub>,...<em>S</em><sub><em>n</em></sub>} together with an ordering &lt; is a plan for <em>A</em>, and a planner carries out the {<em>S</em><sub><em>i</em></sub>} in the specified order, then the planner is likely to have carried out <em>A</em>, thereby achieving the <i>goal</i> that <em>A</em> was intended to accomplish.  </p>
+<p>
+<i>Hierarchical Task Networks</i> (HTNs) are commonly discussed in introductory AI textbooks&nbsp;[<a href="#node_bib_13">13</a>,&nbsp;<a href="#node_bib_5">5</a>], but they also appear in books on logistics planning, operations research, and project planning. In addition to tasks, plans and goals, the other important concepts are <i>states</i>, <i>state variables</i> and <i>actions</i>. Actions that have consequences called <i>postconditions</i> corresponding to changes in the values of state variables brought about by <i>executing</i> an action. Postconditions that are contingent on antecedents called <i>preconditions</i> corresponding to specific values of state variables prior to execution. Goals are typically defined in terms of state-variable assignments. Actions are also called <i>primitive</i> tasks or <i>operators</i> in the parlance of AI planning. The term operator is usually reserved to describe the state changes brought about by executing an action. </p>
+<p>
+Automated planning and dialog management have been linked to one another in AI for decades&nbsp;[<a href="#node_bib_10">10</a>,&nbsp;<a href="#node_bib_22">22</a>,&nbsp;<a href="#node_bib_3">3</a>], but James Allen and his students and colleagues at the University of Rochester are probably most responsible for developing the theory of plan-based dialog management&#8212;see&nbsp;<a href="http://www.cs.rochester.edu/~james/">here</a> for an overview his research and publications on automated planning and natural language understanding<a name="node_call_footnote_Temp_12"></a><sup><small><a href="#node_footnote_Temp_12">2</a></small></sup>
+In planning models of discourse, a task for greeting a user for the first time might be represented as <tt>(&rsquo;greet&rsquo;, &rsquo;first&rsquo;)</tt> and associated with a method that handles interaction with the user:
+<pre class=verbatim>def greet_intro_m(state,turn):
+    if state.user['name'] == None:
+        if turn == 'first':
+            input = interact(&quot;I'm Zinn. What's your name?&quot;)
+        else:
+            input = interact(&quot;Let's try again. Your name?&quot;)
+        matches = lookup(input,'name')
+        if matches:
+            matches = interact('Hi {}. Did I get that right?'.format(matches))
+            if matches:
+                return [('oommit', 'confirm', matches)]
+            else:
+                return [('recover', 'greet', matches)]
+        elif turn == 'first':
+            return [('greet', 'second')]
+        else:
+            return False
+    else:
+        return False
+
+declare_methods('greet', greet_intro_m)
+</pre><p>
+The method returns <tt>False</tt> unless the first argument representing the current state has the variable <tt>user[&rsquo;name&rsquo;]</tt> assigned <tt>None</tt>. The <tt>greet</tt> method then prompts the user, attempts to extract a name from the user&rsquo;s input, and, assuming it comes up with one or more hypotheses, tries to get confirmation. If the hypothesis is confirmed, the method generates a <tt>commit</tt> subtask, which is primitive and thus an action with an associated operator that, in this case, updates the current state with the user&rsquo;s name. In the case of a dialog system, the state records the planner&rsquo;s beliefs, including state variables whose values are unknown&#8212;propositions for which currently there is no evidence, premised&#8212;hypothesized but lacking reliable evidence, and confirmed&#8212;established based on reliable evidence or implied by the values of other variables for which there is reliable evidence. A more sophisticated model might include some form of probabilistic reasoning, but the simple model just introduced should suffice for the present exposition. If the user responds but the system can&rsquo;t confirm the name, the method spawns a recovery task, more about later.</p>
+<p>
+</p>
+<blockquote> <tt>&gt;&gt; # Error handling as part of greeting the user:<br>
+&gt;&gt; Zinn: I&rsquo;m Zinn. What&rsquo;s your name?<br>
+&gt;&gt; User: It&rsquo;s Al<br>
+&gt;&gt; Zinn: Hi Alan. Did I get that right?<br>
+&gt;&gt; User: no<br>
+&gt;&gt; # Here &rsquo;greet&rsquo; generates a &rsquo;recover&rsquo; sub task:<br>
+&gt;&gt; Zinn: Is it one of these: &rsquo;Alan&rsquo; or &rsquo;Alfred&rsquo;?<br>
+&gt;&gt; User: it&rsquo;s the second one<br>
+&gt;&gt; Zinn: Thanks Alfred. Hopefully I got it this time.<br>
+&gt;&gt; # This time doesn&rsquo;t even recognize the name:<br>
+&gt;&gt; Zinn: I&rsquo;m Zinn. What&rsquo;s your name?<br>
+&gt;&gt; User: Don Quixote<br>
+&gt;&gt; Zinn: Let&rsquo;s try again. Your name?<br>
+&gt;&gt; User: Barbie<br>
+&gt;&gt; Zinn: Hi Blaise. Did I get that right?<br>
+&gt;&gt; User: nada<br>
+&gt;&gt; # Doesn&rsquo;t get the name but salvages the dialog:<br>
+&gt;&gt; Zinn: Is it one of these: &rsquo;Blaise&rsquo; or &rsquo;Gabe&rsquo;?<br>
+&gt;&gt; User: nope<br>
+&gt;&gt; Zinn: One more guess. Is it Gabe?<br>
+&gt;&gt; User: I said no<br>
+&gt;&gt; Zinn: Rats! Well, we can still talk about music.<br>
+</tt></blockquote><p>
+Here&rsquo;s a more complex task intended to initiate a session with a conversational music application that starts off by asking the user what sort of music she&rsquo;d like to hear.  This example illustrates elements of both NLG and NLU. The dialog system tries three times to get the user&rsquo;s attention giving her longer to respond each time, until it finally gives up.  Each time the system solicits input it uses different language reflecting its prior attempts to get a response.  The dialog system expects the user to respond with something like &lsquo;&lsquo;Can you play something by the Clash?&rsquo;&rsquo; and, depending on what it is able to infer from the user&rsquo;s response, it formulates a different plan&#8212;sequence of sub tasks&#8212;to continue the dialog. 
+</p>
+<pre class=verbatim>def play_start_m(state,type):
+    &quot;&quot;&quot;
+    Initial 'play' task invoked by [('play','start')]
+    Demonstrates the use of timers in selecting music.
+    &quot;&quot;&quot;
+    if type == 'start':
+        # zinn gives the user increasingly more time.
+        input = False
+        if patience(expand('ASK_WHAT_PLAY'),4,False):
+            input = rewarded()
+        else:
+            if patience(expand('I_CAN_PLAY'),8,True):
+                input = rewarded()
+            else:
+                if patience(expand('I_CAN_SUGGEST'),12,True):
+                    input = rewarded()
+        if input:
+            matches = match(input)
+            if matches['artist'] or matches['genre']:
+                # user intent implied by music.
+                return [('commit', 'premise', matches),
+                        ('confirm', 'play'),
+                        ('confirm', 'music'),
+                        ('perform', 'music')]
+            elif matches['play']:
+                # explicit intent but no music.
+                return [('commit', 'premise', matches),
+                        ('confirm', 'play'),
+                        ('select', 'music'),
+                        ('perform', 'music')]
+            else:
+                # unsure user wants to hear music.
+                return [('recover', 'music')]
+        else:
+            interject(expand('SORRY_GOODBYE'),True)
+            # if no user response, terminate session.
+            return False
+    else:
+        # if 'play' type isn't 'start', backtrack.
+        return False
+
+declare_methods('play', play_start_m)
+</pre><p>
+Here&rsquo;s an example showing the method associated with the <tt>(&rsquo;play&rsquo;, &rsquo;start&rsquo;)</tt> task trying to engage a new user&#8212;the misspellings are intentional:</p>
+<p>
+</p>
+<blockquote> <tt>&gt;&gt; # Demonstrate &rsquo;play start&rsquo; patiently waiting for input:<br>
+&gt;&gt; Zinn: Tell me what you&rsquo;d like to hear?<br>
+&gt;&gt; User: ....<br>
+&gt;&gt; Zinn: Maybe you have a favorite band you&rsquo;d like to hear?<br>
+&gt;&gt; User: ........<br>
+&gt;&gt; Zinn: Would you like me to just play something for you?<br>
+&gt;&gt; User: plsy something slow<br>
+&gt;&gt; Zinn: I didn&rsquo;t catch mention of any music.<br>
+&gt;&gt; Zinn: What music would you like to hear?<br>
+&gt;&gt; User: play some sring<br>
+&gt;&gt; # &rsquo;play&rsquo; generates a &rsquo;confirm&rsquo; following a &rsquo;commit task:<br>
+&gt;&gt; Zinn: By &quot;play some sring&quot; does that roughly mean &quot;play Sting&quot;?<br>
+&gt;&gt; User: yes<br>
+&gt;&gt; Zinn: I got that you want to hear some music.<br>
+</tt></blockquote><p>
+Here&rsquo;s the method for the <tt>(&rsquo;confirm&rsquo;, &rsquo;music&rsquo;)</tt> task generated in the above bit of dialog. At the time this method is called, the state variable <tt>&rsquo;play&rsquo;</tt> is a premise and not yet confirmed, and so the method will generate a <tt>(&rsquo;commit&rsquo;, &rsquo;confirm&rsquo;)</tt> task that will set the <tt>&rsquo;play&rsquo;</tt> state to confirmed: 
+</p>
+<pre class=verbatim>def confirm_play_m(state, type):
+    if type == 'play':
+        if state.var['confirm']['play']:
+            # it's already confirmed!
+            interject(expand('I_GOT you want me to play some music.'))
+            return []
+        elif state.var['premise']['play']:
+            # it needs to be confirmed.
+            bindings = {'this':history(), 'music':got_music(state)}
+            utterance = 'WHEN_YOU_SAY &quot;$this&quot; IS_WAY_SAY &quot;play $music&quot;?'
+            # ask for confirmation.
+            input = interact(expand(utterance,bindings))
+            if lookup(input,'positive'):
+                # yay, play is confirmed.
+                interject(expand('I_GOT you want to hear some music.'))
+                return [('commit', 'confirm', {'play':True})]
+            else:
+                # uh oh, gonna be complicated.
+                return [('recover', 'play')]
+        else:
+            # this is totally unexpected!
+            return [('recover', 'play')]
+    else:
+        return False
+</pre><p></p>
+<p>
+Here&rsquo;s a slightly different but complete version of the <tt>recover</tt> task similar to the one we introduced earlier in the context of in explaining payloads:
+</p>
+<pre class=verbatim>def recover_slots_m(state, slots, caller=None):
+    # see if the calling task has an associated payload:
+    if caller:
+        pay = get_payload[caller]['recover']
+    # normalize and expand aliases in the list of slots.
+    slots = complete(slots)
+    # check to see if the slots have already been filled. 
+    unfilled = [slot for slot in slots if not state.var['premise'][slot]]
+    if not unfilled:
+        return []
+    else:
+        # try twice to recover and then admit failure.
+        if 'leader' in pay['select']:
+            # if there's a domain-specific leader use it.
+            interject(pay['select']['leader'])
+        else:
+            # otherwise display a partial-error leader.
+            interject(&quot;I didn't get all of what you said.&quot;)
+        # last opportunity for customizing this task.
+        if 'prompt' in pay['select']:
+            # if there's a domain-specific prompt use it.
+            input = interact(pay['select']['prompt'])
+        else:
+            input = interact('Give me one {}.'.format(join(unfilled,'or')))
+        matches = match(input)
+        filled = [slot for slot in unfilled if matches[slot]]
+        if filled:
+            interject('Thanks. I got your {}.'.format(join(filled,'and')))
+            return [('commit', 'confirm', matches)]
+        else:
+            # try another general error prompt noting earlier.
+            interject(&quot;I didn't get that either.&quot;)
+            input = interact('Could you say that a different way?')
+            matches = match(input)
+            filled = [slot for slot in unfilled if matches[slot]]
+            if filled:
+                interject('I got your {} that time.'.format(join(filled)))
+                return [('commit', 'confirm', matches)]
+            else:
+                interject(&quot;Sorry. I'm totally confused.&quot;)
+                return False
+
+declare_methods('recover', recover_slots_m)
+</pre><p></p>
+<p>
+So far, the examples have only hinted at the hierarchical structure of dialog. Intuitively, in asking someone what sort of music they like, on hearing their reply you might ask them something in return to confirm what you thought you heard. There are multiple strategies for doing so. Your request for confirmation needn&rsquo;t be so blunt as &lsquo;&lsquo;Did you say Michael Jackson?&rsquo;&rsquo; It could be in the form of a rhetorical question as in &lsquo;&lsquo;So you like Michael Jackson. His early work with the Jackson Five or more recent solo work like Thriller?&rsquo;&rsquo;, or it might be in the form of a statement that implicitly reveals your interpretation of what they said, and assumes your conversational partner will realize if you&rsquo;ve got it wrong and point it out if necessary: &lsquo;&lsquo;It&rsquo;s a shame so many celebrities seem compelled to take drugs that their physicians are only too willing to prescribe.&rsquo;&rsquo; Of course, this last strategy could backfire if your partner replies &lsquo;&lsquo;What other celebrities are you referring to?&rsquo;&rsquo;, and you&rsquo;re as clueless as Zinn and haven&rsquo;t the foggiest what she just said. </p>
+<p>
+There are two features of HTN planning that make it well suited to handling these sort of exchanges. First, for a given task like confirming what music the user likes to listen to, you can have multiple plans for achieving confirmation. If one plan fails, then the planner will backtrack and try another. Second, a task to confirm the user&rsquo;s intent, can push sub tasks on the stack to deal with different contingencies encountered in the process of executing the confirmation task. The difference between executing and evaluating plans&#8212;both of which can involve interaction with the user&#8212;is somewhat blurred in dialog planning in part due to the collaborative nature of conversation. It may be necessary to support a flow-of-control construct like the &lsquo;&lsquo;cut&rsquo;&rsquo; sign (!) in Prolog that precludes backtracking from a failure, which in the case of dialog planning would distinguish between &lsquo;&lsquo;I give up. Let&rsquo;s reset and get on with the main event.&rsquo;&rsquo; and &lsquo;&lsquo;This isn&rsquo;t working. Let&rsquo;s backtrack and try another plan.&rsquo;&rsquo; A more parsimonious approach is to use backtracking for exactly what it was intended and provide plans that capture the idea of cutting one&rsquo;s losses and getting on with life.  We adopt the latter and provide examples subsequently. </p>
+<p>
+The hierarchy of tasks for a simplified version of the play-music application described in this document is listed below.  We don&rsquo;t go into as much detail as we did in the earlier examples, but rather list the tasks and the sub tasks and actions they example into.  There are three levels of expansion within the application portion of the network: 
+</p>
+<pre class=verbatim># Tasks:
+# ('play',{'start','continue'})
+# - initiate or continue 'play music'
+# - expands to sequence of 'select', 'confirm' and 'perform' tasks
+
+# ('select',{'music','album','artist','genre','song'})
+# - identify instance(s) of 'album', 'artist', 'genre' and 'song'
+# - expands to sequence of 'confirm' tasks
+
+# ('confirm',{'album','artist','genre','song'})
+# - solicit confirmation of prior 'select' task
+# - expands to either 'recover' tasks or one or more 'commit' actions
+
+# ('perform',{'music','video'})
+# - handle the performance of selected and confirmed media
+# - expands to a sequence of 'choose', 'queue, and 'monitor' actions
+
+# Actions:
+# ('choose',{'audio','music','video'})
+# - choose specific media to perform, e.g., album track or YT video
+# ('queue',{'audio','music','video'})
+# - queue up the selected media on an appropriate media player
+# ('monitor',{'audio','music','video'})
+# - respond to interrupts and generate new tasks to obtain feedback
+# ('commit','','')
+# - modifies the current state variable to reflect Zinn's knowledge
+</pre><p>
+It can be tricky building any sort of dialog system. The approach based on hierarchical task networks outlined here, simplifies some aspects of system development, but getting all the edge cases right, inferring user intent and generating appropriate responses is still challenging.  There has been some progress in learning various aspects of dialog management&nbsp;[<a href="#node_bib_15">15</a>,&nbsp;<a href="#node_bib_4">4</a>] that we will discuss&nbsp;<a href="#interacting_for_training_examples">below</a>, but there is no completely general and effective approach available at this time and, at the very least, we will have to hand-code the most basic tasks plans and for a given application. However, there is some hope that we can build a generic error mitigation and recovery module that can be plugged into any application, possibly with the aid of some linguistic lubrication in the form of an application-appropriate payload such as we discussed earlier in this manuscript.</p>
+<p>
+</p>
+<a name="node_sec_Temp_13"></a>
+<h2 class=section>Error Mitigation and Recovery</h2>
+<p>The <tt>recover</tt> task introduced earlier represented but one strategy for recovering when confirmation fails. Linguists interested in discourse have categorized the different strategies people commonly use to resolve ambiguity and recover from non-understanding, and computer scientists have implemented those strategies in various dialog management systems&nbsp;[<a href="#node_bib_11">11</a>,&nbsp;<a href="#node_bib_12">12</a>,&nbsp;<a href="#node_bib_1">1</a>,&nbsp;<a href="#node_bib_3">3</a>,&nbsp;<a href="#node_bib_7">7</a>]. In this section, we briefly describe one such approach, and start by providing a set of <tt>&rsquo;recover&rsquo;</tt> tasks adapted from the RavenClaw non-understanding strategies described in&nbsp;[<a href="#node_bib_2">2</a>]. The following <tt>u_*</tt> recovery strategies encourage the user to provide more or better information to help in recovering from Zinn&rsquo;s present problem of understanding the user&rsquo;s intention&#8212;in some cases an example domain-independent payload<a name="node_call_footnote_Temp_14"></a><sup><small><a href="#node_footnote_Temp_14">3</a></small></sup> is included for illustration purposes:
+</p>
+<pre class=verbatim>Tasks: ('recover', { ... see below ... }, *ARGS)
+
+recover_u_strategies = \
+    {'u_rewords':  # z asks user to rephrase her previous response:
+     {'prompt':variant('U_REWORDS_PROMPT':
+                       ['Could you restate that more simply.',
+                        'Could you say that in another way.',
+                        'Is there another way of saying that.'])},
+     'u_focuses':  # z asks user to focus response on the context:
+     {'prompt':variant('U_FOCUSES_PROMPT':
+                       ['Could you be more explicit about {}.',
+                        &quot;I didn't get what you said about {}.&quot;,
+                        'Can you tell me some more about {}.'])},
+     'u_chooses':  # z asks user to select item from a short menu:
+     {'prompt':variant('U_CHOOSES_PROMPT':
+                       ['Please choose from the following: {}',
+                        'Perhaps one of the following works: {}',
+                        'Could you select from this menu: {}'])},
+     'u_parrots':  # z provides examples of text it can handle:
+     {'prompt':variant('U_PARROTS_PROMPT':
+                       ['Here are some examples I can handle:',
+                        'It would help to say something like:',
+                        'Could you describe it like one of these:'])}}
+</pre><p></p>
+<p>
+In the <tt>z_*</tt> recovery strategies, Zinn takes the initiative by repeating its last utterance, thereby offering the user another chance to respond, or, alternatively, by requesting additional information from the user or, in one way or another, avoiding the problem altogether.  Asking for additional information can be dangerous as as the ploy might just backfire resulting in Zinn being more confused and the user less inclined to sustain the conversation with so inept a partner.  Generally, the best option is to ask one or more yes-or-no questions or allow the user to select from a short list of options as in the <tt>u_chooses</tt> strategy above:
+</p>
+<pre class=verbatim>recover_z_strategies = \
+    {'z_repeats':  # repeat the last system-generated utterance:
+     {},           # - no payload since last utterance == history[0]
+     'z_rewords':  # reword the last system-generated utterance: 
+     {}            # - requires an application-specific payload
+     'z_explains': # explain the misunderstanding in some detail:
+     {},           # - requires an application-specific payload
+     'z_advances': # zinn moves on in the dialog ignoring problem:  
+     {},           # - no payload since zinn doesn't have to respond 
+     'z_silence':  # silent wait for user to volunteer information:
+     {}}           # - no payload since zinn doesn't have to respond 
+
+def init_recover(state):
+    state.nonunderstanding = {'task':None, 'status':None, 'input':None}
+    return state  # also intended to collect any subsequent dialog
+</pre><p></p>
+<p>
+Finally, here is a shorter list of <tt>resolve</tt> adapted from the RavenClaw misunderstanding strategies described in&nbsp;[<a href="#node_bib_2">2</a>]:
+</p>
+<pre class=verbatim>Tasks: ('resolve', { ... see below ... }, *ARGS)
+
+resolve_strategies = \
+    {'confirm':  # request / obtain confirmation 
+     {},         # - optional continuation, mandatory recovery task
+     'assume':   # proceed indicating assumption 
+     {},         # - this might require a subsequent recovery task
+     'reject':   # reject, notify and continue 
+     {},         # - payload can include optional continuation task
+     'escalate': # express, escalate, recover
+     {}}         # - describe the problem and append a recovery task
+
+def init_resolve(state):
+    state.misunderstanding = {'task':None, 'status':None, 'input':None} 
+    return state  # also intended to collect any subsequent dialog
+</pre><p></p>
+<p>
+<a name="interacting_for_training_examples"></a>
+</p>
+<a name="node_sec_Temp_15"></a>
+<h1 class=section>Soliciting Targeted Training Data</h1>
+<p>Dialogs and the associated decision problems are represented by various formal models including finite state machines, state chard diagrams, probabilistic graphical models, Markov decision processes, partially observable Markov decision processes, hierarchical task networks, and temporal logics among others&nbsp;[<a href="#node_bib_10">10</a>,&nbsp;<a href="#node_bib_15">15</a>,&nbsp;<a href="#node_bib_14">14</a>,&nbsp;<a href="#node_bib_23">23</a>]. All those mentioned are more or less up to the task with varying degrees of augmentation.  Most of them have been used as the target representation in approaches to learning dialog with reinforcement learning (RL) and partially observable Markov decision process (POMDP) induction being two of the most popular approaches.</p>
+<p>
+As in most learning problems, you have to supply a loss function which is generally cast in terms of a reward signal in the case of RL or a utility function in the case of POMDP learning.  What might that mean in the case of dialog?  One answer is that Zinn gets negative reward&#8212;punishment&#8212;when the user terminates the session since that is when Zinn&rsquo;s has irretrievably failed to sustain the dialog. However, while this signal may seem like the analog of losing a game of chess or backgammon, it&rsquo;s a poor analogy in this case since users will have many reasons for terminating a session that have nothing to do with Zinn&rsquo;s prowess as an engaging conversationalist.  </p>
+<p>
+A better solution would be to periodically assess how things are going during the dialog, but this would interrupt the conversation flow and the signal will likely be noisy except in the case of very cooperative users or appropriately incentivized volunteers. Using Mechanical Turk to enlist the help of a great many paid confederates might be cost effective when amortized over the life of a successful application, but it would still require a good deal of care to ask the right questions and some additional effort to clean and interpret the data.  A better approach might be to launch a limited-function, somewhat-awkward pre-release version of the application and enlist the beta testers in helping to train the system, by letting them interact normally with the application, while providing intermittent feedback in the form of helping the system to recover from errors and malapropisms. </p>
+<p>
+In the case of the approach outlined in this document, imagine that every 1 in a 1000 or 10,000 times Zinn asks some question. There are three types of question Zinn might ask depending on the context:
+</p>
+<ol>
+<li><p>yes-no questions asking if two utterances or utterance-fragments are semantically equivalent or if an utterance is appropriate in a given context, e.g., <tt>&quot;is {} a good way of asking {}&quot;</tt>, <tt>&quot;does it make sense to substitute {} for {} in {}&quot;</tt>,  <tt>&quot;would you to say {} in response to my saying {}&quot;</tt>;
+</p>
+<li><p>multiple choice questions asking the user to select the best way of saying something or identify which one of the choices is least like the others, e.g., <tt>&quot;suppose I said {} which of the following would be the best response: {}&quot;</tt>, <tt>&quot;suppose you were me and someone asked you {} if you had to pick one of the following as your reply which one would it be: {}&quot;</tt>;
+</p>
+<li><p>requests for example utterances demonstrating how the user would say something or what the user would answer if she were Zinn and asked a question, e.g., <tt>&quot;how would you say {}&quot;</tt>, <tt>&quot;how would you have answered {}&quot;</tt>, <tt>&quot;can you rephrase {}&quot;</tt>, <tt>&quot;what does {} mean&quot;</tt>, <tt>&quot;when you say {} does that mean the same as {}&quot;</tt>, <tt>&quot;what would you say to exit gracefully from this situation&quot;</tt>;
+</p>
+</ol><p>
+Answers to such questions would help Zinn to evaluate what it said, train classifiers to categorize what the user said, and enhance its language understanding and generation capabilities by learning to interpret what the uses wants, better communicate what Zinn needs to say, and improving its vocabulary and overall linguistic competence. This discussion just begins the exploration of how we might program Zinn to learn from its conversational partners. Appendix&nbsp;<a href="#append_collaborative_understanding">A</a> provides some more ideas on how we might proceed to implement such a capability.</p>
+<p>
+Figuring out what and when Zinn should communicate to the user in these side conversations will require a small team consisting of user-experience experts, linguists schooled in discourse analysis and speech act theory, psychologists adept at experimental design, and machine learning experts well versed in solving NLP problems. Some of these same experts will be important in designing the limited-function, pre-release version of the target application.  This is just another step toward building chatterbots that can hold up their end of a conversation with a human. If successful&#8212;and I believe it will be if we assemble a talented team&#8212;then Zinn will enhance several existing products, enable new applications that would not have been possible otherwise, and help to bootstrap more ambitious projects like SmallTalk by providing a platform on which to deliver targeted training data.</p>
+<p>
+
+</p>
+<a name="node_sec_Temp_16"></a>
+<h1 class=section>References</h1>
+<p></p>
+<table>
+<p>
+</p>
+<tr><td align=right valign=top><a name="node_bib_1"></a>[1]&nbsp;&nbsp;</td><td>
+Dan Bohus.
+ <i>Error Awareness and Recovery in Conversational Spoken Language
+Interfaces</i>.
+ PhD thesis, Carnegie Mellon University, 2007.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_2"></a>[2]&nbsp;&nbsp;</td><td>
+Dan Bohus and Alexander&nbsp;I. Rudnicky.
+ Error handling in the ravenclaw dialog management architecture.
+ In <i>In Proceedings of the Human Language Technology Conference
+Conference on Empirical Methods in Natural Language Processing</i>, 2005.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_3"></a>[3]&nbsp;&nbsp;</td><td>
+Dan Bohus and Alexander&nbsp;I. Rudnicky.
+ The RavenClaw dialog management framework: architecture and
+systems.
+ <i>Computer Speech &amp; Language</i>, 23(3):332--361, 2009.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_4"></a>[4]&nbsp;&nbsp;</td><td>
+Ananlada Chotimongkol and Alexander&nbsp;I. Rudnicky.
+ Acquiring domain-specific dialog information from task-oriented
+human-human interaction through an unsupervised learning.
+ In <i>Proceedings of the 2008 Conference on Empirical Methods in
+Natural Language Processing</i>, pages 955--964. Association for Computational
+Linguistics, 2011.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_5"></a>[5]&nbsp;&nbsp;</td><td>
+Thomas Dean, James Allen, and Yiannis Aloimonos.
+ <i>Artificial Intelligence: Theory and Practice</i>.
+ Addison-Wesley Publishing Company, Reading, Massachusetts, 1995.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_6"></a>[6]&nbsp;&nbsp;</td><td>
+Sergio Guadarrama, Lorenzo Riano, Dave Golland, Daniel Gouhring, Yangqing Jia,
+Dan Klein, Pieter Abbeel, and Trevor Darrell.
+ Grounding spatial relations for human-robot interaction.
+ In <i>2013 IEEE/RSJ International Conference on Intelligent
+Robots and Systems</i>, pages 1640--1647, 2013.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_7"></a>[7]&nbsp;&nbsp;</td><td>
+Matthew Henderson.
+ <i>Recovering From Errors in Conversational Dialogue Systems</i>.
+ PhD thesis, University of Edinburgh, 2011.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_8"></a>[8]&nbsp;&nbsp;</td><td>
+Percy Liang, Michael&nbsp;I. Jordan, and Dan Klein.
+ Learning semantic correspondences with less supervision.
+ In Keh-Yih Su, Jian Su, and Janyce Wiebe, editors, <i>Proceedings
+of the 47th Annual Meeting of the Association for Computational Linguistics
+and the 4th International Joint Conference on Natural Language Processing</i>,
+pages 91--99, 2009.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_9"></a>[9]&nbsp;&nbsp;</td><td>
+Percy Liang, Michael&nbsp;I. Jordan, and Dan Klein.
+ Learning dependency-based compositional semantics.
+ <i>Computational Linguistics</i>, 39(2):389--446, 2013.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_10"></a>[10]&nbsp;&nbsp;</td><td>
+Diane&nbsp;J. Litman and James&nbsp;F. Allen.
+ A plan recognition model for subdialogues in conversations.
+ <i>Cognitive Science</i>, 11(2):163--200, 1987.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_11"></a>[11]&nbsp;&nbsp;</td><td>
+Susan McRoy and Graeme Hirst.
+ Misunderstanding and the negotiation of meaning.
+ Technical report, AAAI Technical Report FS-93-05, 1993.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_12"></a>[12]&nbsp;&nbsp;</td><td>
+Susan&nbsp;W. McRoy.
+ Misunderstanding and the negotiation of meaning using abduction.
+ <i>Knowledge-Based Systems</i>, 8(2–3):126--134, 1995.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_13"></a>[13]&nbsp;&nbsp;</td><td>
+Stuart Russell and Peter Norvig.
+ <i>Artificial Intelligence: A Modern Approach</i>.
+ Second edition, Prentice Hall, Upper Saddle River, NJ, 2003.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_14"></a>[14]&nbsp;&nbsp;</td><td>
+Jost Schatzmann, Karl Weilhammer, Matt Stuttle, and Steve Young.
+ A survey of statistical user simulation techniques for
+reinforcement-learning of dialogue management strategies.
+ <i>The Knowledge Engineering Review</i>, 21:97--126, 2006.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_15"></a>[15]&nbsp;&nbsp;</td><td>
+Satinder&nbsp;P. Singh, Michael&nbsp;J. Kearns, Diane&nbsp;J. Litman, and Marilyn&nbsp;A. Walker.
+ Reinforcement learning for spoken dialogue systems.
+ In <i>Advances in Neural Information Processing Systems 12</i>, pages
+956--962, 1999.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_16"></a>[16]&nbsp;&nbsp;</td><td>
+J.M. Siskind.
+ Grounding language in perception.
+ <i>Artificial Intelligence Review</i>, 8:1995, 371-391.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_17"></a>[17]&nbsp;&nbsp;</td><td>
+J.M. Siskind.
+ A computational study of cross-situational techniques for learning
+word-to-meaning mappings.
+ <i>Cognition</i>, 61:1996, 39-91.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_18"></a>[18]&nbsp;&nbsp;</td><td>
+Richard Socher, John Bauer, Christopher&nbsp;D. Manning, and Andrew&nbsp;Y. Ng.
+ Parsing with compositional vector grammars.
+ In <i>Proceedings of the 51st Annual Meeting of the Association for
+Computational Linguistics</i>, Stroudsburg, PA, USA, 2013. Association for
+Computational Linguistics.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_19"></a>[19]&nbsp;&nbsp;</td><td>
+Richard Socher, Eric&nbsp;H. Huang, Jeffrey Pennington, Andrew&nbsp;Y. Ng, and
+Christopher&nbsp;D. Manning.
+ Dynamic pooling and unfolding recursive autoencoders for paraphrase
+detection.
+ In John Shawe-Taylor, Richard&nbsp;S. Zemel, Peter&nbsp;L. Bartlett, Fernando
+C.&nbsp;N. Pereira, and Kilian&nbsp;Q. Weinberger, editors, <i>Advances in Neural
+Information Processing Systems 24</i>, pages 801--809. MIT Press, 2011.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_20"></a>[20]&nbsp;&nbsp;</td><td>
+Richard Socher, Brody Huval, Christopher&nbsp;D. Manning, and Andrew&nbsp;Y. Ng.
+ Semantic compositionality through recursive matrix-vector spaces.
+ In <i>Proceedings of the 2012 Conference on Empirical Methods in
+Natural Language Processing</i>. Association for Computational Linguistics,
+2012.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_21"></a>[21]&nbsp;&nbsp;</td><td>
+Richard Socher, Alex Perelygin, Jean&nbsp;Y. Wu, Jason Chuang, Christopher&nbsp;D.
+Manning, Andrew&nbsp;Y. Ng, and Christopher Potts.
+ Recursive deep models for semantic compositionality over a sentiment
+treebank.
+ In <i>Proceedings of the 2013 Conference on Empirical Methods in
+Natural Language Processing</i>, pages 1631--1642. Association for Computational
+Linguistics, Stroudsburg, PA, USA, 2013.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_22"></a>[22]&nbsp;&nbsp;</td><td>
+Marilyn&nbsp;A. Walker, Diane&nbsp;J. Litman, Candace&nbsp;A. Kamm, and Alicia Abella.
+ PARADISE: A framework for evaluating spoken dialogue agents.
+ In <i>35th Annual Meeting of the Association for Computational
+Linguistics</i>, pages 271--280, 1997.<p>
+</p>
+</td></tr>
+<tr><td align=right valign=top><a name="node_bib_23"></a>[23]&nbsp;&nbsp;</td><td>
+S.&nbsp;Young, M.&nbsp;Gasic, B.&nbsp;Thomson, and J.D. Williams.
+ POMDP-based statistical spoken dialog systems: A review.
+ <i>Proceedings of the IEEE</i>, 101(5):1160--1179, 2013.<p>
+</p>
+</table><p>
+
+</p>
+<p>
+<a name="append)collaborative_understanding"></a>
+</p>
+<a name="node_sec_Temp_17"></a>
+<h1 class=section>Appendix A. Collaborative Understanding</h1>
+<p>We&rsquo;ve already seen examples of how to extract potentially useful training data from the user as a natural part of collaborative understanding, e.g., <tt>WHEN_YOU_SAY &quot;$input&quot; IS_WAY_SAY &quot;play $music&quot;?</tt>. We also routinely get distal training when the user confirms our expectations either explicitly or implicitly. Any approach will likely involve more of the same. From a user-interface perspective, the trick will be to interject questions intended gather training data at natural opportunities in the dialog, e.g., when a request for confirmation facilitates the current task of, say, finding out what the user would like to hear, or when there has been an obvious misunderstanding and by answering a question the user helps to ensure that Zinn won&rsquo;t make the same or similar mistake in the future. I imagine that there will be more than enough such opportunities if we able to draw on as many users as we hope to attract.  Since the natural opportunities will involve ambiguities and misunderstandings, we will also be able to collect &lsquo;&lsquo;hard&rsquo;&rsquo; negative examples corresponding to utterances on which Zinn failed.</p>
+<p>
+Here are some more ways of soliciting useful information including several variations on earlier mentioned one that Bill provided: <tt>Is $this the best way to say $that?</tt>, <tt>Which of $these is the best way to say $that?</tt>, <tt>Can you say $this in reply to $that?</tt>, <tt>Does it make sense to say $this in response to $that?</tt>, <tt>Which of $these is the least like the others?</tt>, <tt>If someone tells me $this does that mean I can say $that?</tt>, <tt>Does $this mean roughly the same as $that?</tt> <tt>Is $this a good analogy for $that?</tt>, <tt>Does <em>X</em> relate to <em>Y</em> in the same way that <em>W</em> relates to <em>Z</em>?</tt><a name="node_call_footnote_Temp_18"></a><sup><small><a href="#node_footnote_Temp_18">4</a></small></sup>
+The next question concerns what the schema variables, <tt>$this</tt>, <tt>$that</tt>, etc, are bound to. Complete short sentences are obvious candidates. These could be user or Zinn utterances, or paraphrases of the same. But I expect sentence fragments, e.g., verb and noun phrases, will be just as important if not more so when we get to working with more verbose user input as we might expect for a speech-input application.  The sentence <tt>Why don&rsquo;t you play the third cut included with the CD</tt> is potentially baffling to Zinn in several ways. Zinn might ask one of the following: <tt>When you say &quot;third cut&quot; do you mean &quot;third song&quot;?</tt> or <tt>Does &quot;included with the CD&quot; mean roughly the same as &quot;on the album&quot;?</tt> but probably not <tt>When you say &quot;Why don&rsquo;t you play the third cut included with the CD&quot; do you mean &quot;Play the first song on the album&quot;</tt> unless Zinn was reasonably sure of all the pieces. </p>
+<p>
+If we&rsquo;re to focus on smaller pieces of text than whole sentences, we&rsquo;ll need a good part-of-speech tagger and phrase-structure parser&#8212;what Jonni Kanerva was calling a <i>constituency parser</i> in Friday&rsquo;s Descartes-Zinn meeting&#8212;to identify phase boundaries and select text.  This involves some relatively heavy duty NLP technology but I suspect we can get some value by using such tools sparingly and without going as far as Descartes does in mapping surface text to its underlying semantic frame language and back.  Speaking of NLP technology, having extracted a bunch of phrases all of which ostensibly mean <tt>song on the album</tt>, how are we going to generalize? Here again, judicious use of tools borrowed from Brain and Descartes, e.g., the LSTM-plus-MCR technology that Lukasz Kaiser described Friday&#8212;if you&rsquo;re not familiar with the term Modular Composite Representation, see my&nbsp;<a href="https://x20web.corp.google.com/~tld/quarter/14/3/docs/log/index.html#modular_composite_representations">introduction</a> from last month.</p>
+<p>
+We&rsquo;re not interested in learning to comprehend arbitrary topics and language, and so I started to write down the sort of knowledge that the Zinn &lsquo;Play Music&rsquo; application needs to carry out its job. I broke it down into four categories characterized by four questions that Zinn might &lsquo;&lsquo;ask of itself&rsquo;&rsquo; as it were. The are as follows:
+</p>
+<ul>
+<li><p>What can I do?&nbsp;&#8212; aside from idle chitchat, there&rsquo;s no sense talking about anything unless Zinn can do something about it. This dismisses a large fraction of natural discourse, but I think we&rsquo;re fine if Zinn is an idiot savant as long as it provides a useful service in an engaging manner that sustains user interest; 
+</p>
+<blockquote>
+PLAY&nbsp;&#8212; play a song
+CHOOSE&nbsp;&#8212; select a song from <tt>{artist,album,genre}</tt>, choose an artist from <tt>{list_of_artists}</tt>, etc.<br>
+ASK&nbsp;&#8212; what&rsquo;s your favorite <tt>{artist,album,genre}</tt>, would like me to play another selection from <tt>{artist,album,genre}</tt>, etc.<br>
+INFORM&nbsp;&#8212; here&rsquo;s song from <tt>{artist,album}</tt>, i&rsquo;ll play another <tt>{genre}</tt> song, i understand you don&rsquo;t like <tt>{artist,album,song,genre}</tt>, etc.<br>
+</blockquote>
+<li><p>What can I know?&nbsp;&#8212; again, pragmatically speaking, Zinn is limited to a pretty simple ontology including artists, albums, songs, genres, a few basic relationships, a limited conception of time events, perhaps a superficial knowledge of human activities and moods, and the notion of user preferences;
+</p>
+<blockquote>
+RELATIONSHIPS&nbsp;&#8212; <tt>song [by] artist</tt>, <tt>song [in] genre</tt>, <tt>song [on] album</tt>, <tt>genre [has] list_of_artists</tt>, <tt>artist [has] list_of_genres</tt>, etc.<br>
+PREFERENCES&nbsp;&#8212; what&nbsp;&#8212;&gt; {<tt>list_of_artists, list_of_genres</tt>}, when &#8212;&gt; {<tt>current_activity, how_often_play, current_mood, time_of_day</tt>}, etc.<br>
+</blockquote>
+<li><p>What should I do?&nbsp;&#8212; of all the things Zinn is capable of at any given times, exactly what should it do now&#8212;including the option of asking questions to collect information, e.g., preferences, in order to enable future planning and decision making;
+</p>
+<blockquote>
+GOALS&nbsp;&#8212; what do you like to hear, when do you like to hear it, what do you want to hear now, what is your current <tt>{activity, mood}</tt>, etc.<br>
+</blockquote>
+<li><p>How can I do it?&nbsp;&#8212; not really an issue yet, but one can imagine having a choice to play a song from the user&rsquo;s locker, from a YouTube music video, from a shared list of favorites, from the Play Store if it is free or there&rsquo;s an available sample excerpt from a recording on sale at Google Play or iTunes;
+</p>
+</ul><p></p>
+<p>
+As for related work I asked Gary Marcus a professor at NYU who did his PhD work with Steven Pinker it he knew of any credible computational theories of knowledge acquisition. And he replied disparagingly of the current state of affairs in developmental linguistics. I did find some interesting papers from Ray Mooney’s language learning group at UT Austin: (<a href="http://www.cs.utexas.edu/~ml/publications/area/78/natural_language_learning">URL</a>), and I took a look at Dan Klein’s Stanford PhD supervised by Chris Manning and Daphne Koller (<a href="http://www.cs.berkeley.edu/~klein/papers/klein_thesis.pdf">PDF</a>) as well as his more recent work on different aspects of language acquisition&nbsp;[<a href="#node_bib_9">9</a>,&nbsp;<a href="#node_bib_6">6</a>,&nbsp;<a href="#node_bib_8">8</a>].</p>
+<p>
+Dan&rsquo;s work is primarily about learning syntax and I found Richard Socher&rsquo;s thesis (<a href="http://nlp.stanford.edu/~socherr/thesis.pdf">PDF</a>) more useful in thinking about the structure of language&#8212;as well as visual scenes&nbsp;[<a href="#node_bib_18">18</a>,&nbsp;<a href="#node_bib_19">19</a>,&nbsp;<a href="#node_bib_20">20</a>,&nbsp;<a href="#node_bib_21">21</a>]. I&rsquo;ve always found Jeff Siskind&rsquo;s work on grounding language in perception&nbsp;[<a href="#node_bib_17">17</a>] (<a href="https://engineering.purdue.edu/~qobi/papers/aireview1995.pdf">PDF</a>) and modeling lexical acquisition&nbsp;[<a href="#node_bib_16">16</a>] (<a href="https://engineering.purdue.edu/~qobi/papers/cognition1996.pdf">PDF</a>) intriguing, and Kevin Murphy indicated that Jeff has some new work along similar lines that might be worth looking into&#8212;Kevin is running AAAI Spring or Fall Symposium on a related topic. </p>
+<p>
+</p>
+<div class=footnoterule><hr></div><p></p>
+<div class=footnote><p><a name="node_footnote_Temp_1"></a><sup><small><a href="#node_call_footnote_Temp_1">1</a></small></sup> Thanks to the members of the Zinn team, Johnny Chen, Sudeep Gandhe, Shalini Ghosh, Anja Hauth, Luheng He, Peter Lau, Xin Rong and Gabe Schine who are building the first instantiation of Zinn and dealing with the myriad technical challenges involved in building a real system that I was able to gloss over in presenting the ideas in this document.
+Many of those ideas surfaced from discussions in our daily scrum meetings, and nearly all of the hard-won insights into what works and what doesn&rsquo;t in developing scalable dialog systems came from those same meetings or side discussions with individuals on the team.  
+And special thanks to Bill Byrne for the time he spent convincing me how important it is to get the language right and in sync with the user&rsquo;s expectations and for showing me some of his techniques for implementing natural, contextually-aware language generation.</p>
+<p><a name="node_footnote_Temp_12"></a><sup><small><a href="#node_call_footnote_Temp_12">2</a></small></sup> Here is an excerpt from James Allen&rsquo;s Conversational Interactions and Spoken Dialog Research Group&nbsp;<a href="http://www.cs.rochester.edu/~james/">webpage</a>:
+</p>
+<blockquote>
+Our research in discourse is focused on two-person extended dialogs in which the speakers have specific tasks to accomplish. An emphasis in this work on developing a theory of dialogue as a collaborative problem solving activity, where the current problem solving situation is used to solve problems in semantic interpretation and the recognition of the intentions underlying the speakers&rsquo; utterances. Highlights of work in this area include the development of the first computational model of speech acts, the development of a multi-level plan-based analysis involving discourse, and the development of an overall architecture for dialogue systems driven by a collaborative problem solving agent. While it is important for work to be formally well-defined and understood, it is equally important that computational theories can lead to effective implementations. We have demonstrated and tested our models in a wide range of different applications. Most recently, we have been focusing on task/workflow learning systems in which the the system learns a task model from a dialogue with the user that includes a single demonstration of the task. By combining deep language understanding, reasoning, learning and dialog, we can learn robust task models in a matter of minutes. 
+</blockquote></p>
+<p><a name="node_footnote_Temp_14"></a><sup><small><a href="#node_call_footnote_Temp_14">3</a></small></sup> In previous examples, the &lsquo;&lsquo;calling&rsquo;&rsquo; task uses <tt>interject</tt> to make a domain-dependent request for confirmation, e.g., <tt>&quot;Hi {}. Did I get that right?&quot;.format(name)</tt>, and the domain-independent confirmation task handles the reply to the user&rsquo;s response, e.g., <tt>&quot;Great. Thanks for being patient with me&quot;</tt> or <tt>&quot;Rats! Let&rsquo;s forget about it for now.&quot;</tt>  We might have the application designer provide a collection of schema along with slots to be filled by the calling task, and have the confirmation task handle both confirmation requests and responses.  If provided, these would override the set of application-independent schema. These schema could be as simple as <tt>&quot;Rats! Well at least we can have fun playing some music.&quot;</tt> [a schema with zero slots but specific to the play-music application], or as complex as <tt>&quot;Nice. Looking at your profile I see you like &rsquo;Canned Heat&rsquo;. How about I play &rsquo;Woodstock Boogie&rsquo;?&quot;</tt> [schema with two slots, filled in this example].</p>
+<p><a name="node_footnote_Temp_18"></a><sup><small><a href="#node_call_footnote_Temp_18">4</a></small></sup> For more of these idiomatic ways of posting questions about language see this&nbsp;<a href="http://www.platinumgmat.com/about_gmat/sc_gmat_idiom_list">list</a> of GMAT idioms, i.e., ways of phrasing questions that GMAT uses regularly in its tests. I&rsquo;m not really recommending these particular idioms, rather I&rsquo;m simply pointing out that others have thought about this and we can probably take advantage of what they have learned.</p>
+</div>
+<div class=smallskip></div>
+<p style="margin-top: 0pt; margin-bottom: 0pt">
+<div align=right class=navigation></div>
+</p>
+<p></p>
+</div>
+</body>
+</html>
