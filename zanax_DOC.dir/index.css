@@ -129,10 +129,20 @@
                }
 
                blockquote {
+               background-color: #ffffff;
+               margin-top: 2pt;
+               margin-bottom: 2pt;
+               margin-left: 2em;
+	       /* redefining block quote to have a white background */
+               }
+
+               cblockquote {
                background-color: #f0e0e0;
                margin-top: 2pt;
                margin-bottom: 2pt;
                margin-left: 2em;
+	       /* original blackquote with pinkish hue background */
+	       /* in RGB red is 240, green is 224 and blue is 224 */
                }
 
                .smallskip {

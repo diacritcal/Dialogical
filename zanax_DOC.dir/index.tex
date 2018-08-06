@@ -97,7 +97,7 @@ This reliance on interactive understanding is potentially Zinn's most important 
 
 Engaging the user to help avoid or recover from errors in understanding has an additional benefit that is critical to the longer term goals of the Zinn Project, namely, many of strategies that work for dealing with misunderstanding, also work to learn about colloquial dialog. If Zinn doesn't understand something the user said, it can ask for a paraphrase. If it has two or more hypotheses, it can ask the user to pick one. If Zinn thinks the user might be asking it to play a song by a particular artist, it can ask if this is the correct interpretation, or start playing the music and see if the user protests.
 
-Launching Zinn as a music entertainment application is the first step in building more sophisticated agents that rely language models trained on extensive logs of users interacting with simpler agents like the first instantiations of Zinn. Even our first instantiation will depend on massive amounts of music and dialog data mined from news, books, interviews and technical-help chat logs. The size of this data is in the billions of words, but much of it is not well aligned with the music application and billions of words doesn't begin to do justice to the diversity of human language generation. 
+Launching Zinn as a music entertainment application is the first step in building more sophisticated agents that rely on language models trained on extensive logs of users interacting with simpler agents like the first instantiations of Zinn. Even our first instantiation will depend on massive amounts of music and dialog data mined from news, books, interviews and technical-help chat logs. The size of this data is in the billions of words, but much of it is not well aligned with the music application and billions of words doesn't begin to do justice to the diversity of human language generation. 
 
 We are in the process of building an end-to-end music application. The actual delivery of music content will be limited and not as nuanced as we might like\emdash{}we are engineers, not user-experience experts. However, if we are successful, we will have demonstrated that our approach can enhance the language understanding technologies that define the state of the art in dialog systems. This document introduces the basic strategies for resolving ambiguity and recovering from failures in understanding. The accompanying Python code illustrates how these strategies can be realized in a simple planning system. 
 
@@ -275,7 +275,7 @@ def greet_intro_m(state,turn):
         if matches:
             matches = interact('Hi {}. Did I get that right?'.format(matches))
             if matches:
-                return [('oommit', 'confirm', matches)]
+                return [('commit', 'confirm', matches)]
             else:
                 return [('recover', 'greet', matches)]
         elif turn == 'first':
@@ -599,8 +599,8 @@ Answers to such questions would help Zinn to evaluate what it said, train classi
 
 Figuring out what and when Zinn should communicate to the user in these side conversations will require a small team consisting of user-experience experts, linguists schooled in discourse analysis and speech act theory, psychologists adept at experimental design, and machine learning experts well versed in solving NLP problems. Some of these same experts will be important in designing the limited-function, pre-release version of the target application.  This is just another step toward building chatterbots that can hold up their end of a conversation with a human. If successful\emdash{}and I believe it will be if we assemble a talented team\emdash{}then Zinn will enhance several existing products, enable new applications that would not have been possible otherwise, and help to bootstrap more ambitious projects like SmallTalk by providing a platform on which to deliver targeted training data.
 
-\bibliographystyle{/u/tld/papers/tex/plain}
-\bibliography{/u/tld/papers/tex/strings,/u/tld/papers/tex/dean}
+\bibliographystyle{/u/tld/Drive/write/latex/plain.bst}
+\bibliography{/u/tld/Drive/write/bibtex/dean.bib}
 
 \rawhtml
 <a name="append)collaborative_understanding"></a>
