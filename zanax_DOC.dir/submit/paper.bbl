@@ -1,0 +1,145 @@
+\begin{thebibliography}{10}
+
+\bibitem{BohusPhD-07}
+Dan Bohus.
+\newblock {\em Error Awareness and Recovery in Conversational Spoken Language
+  Interfaces}.
+\newblock PhD thesis, Carnegie Mellon University, 2007.
+
+\bibitem{BohusandRudnickyHLTEMNLP-05}
+Dan Bohus and Alexander~I. Rudnicky.
+\newblock Error handling in the ravenclaw dialog management architecture.
+\newblock In {\em In Proceedings of the Human Language Technology Conference
+  Conference on Empirical Methods in Natural Language Processing}, 2005.
+
+\bibitem{BohusandRudnickyCSL-09}
+Dan Bohus and Alexander~I. Rudnicky.
+\newblock {The {RavenClaw} dialogue management framework: architecture and
+  systems}.
+\newblock {\em Computer Speech \& Language}, 23:332--361, 2009.
+
+\bibitem{ChotimongkolandRudnickyEMNLP-08}
+Ananlada Chotimongkol and Alexander~I. Rudnicky.
+\newblock Acquiring domain-specific dialog information from task-oriented
+  human-human interaction through an unsupervised learning.
+\newblock In {\em Proceedings of the 2008 Conference on Empirical Methods in
+  Natural Language Processing}, pages 955--964. Association for Computational
+  Linguistics, 2011.
+
+\bibitem{Deanetal95}
+Thomas Dean, James Allen, and Yiannis Aloimonos.
+\newblock {\em {Artificial Intelligence: Theory and Practice}}.
+\newblock Addison-Wesley Publishing Company, Reading, Massachusetts, 1995.
+
+\bibitem{GuadarramaetalICRAS-13}
+Sergio Guadarrama, Lorenzo Riano, Dave Golland, Daniel Gouhring, Yangqing Jia,
+  Dan Klein, Pieter Abbeel, and Trevor Darrell.
+\newblock Grounding spatial relations for human-robot interaction.
+\newblock In {\em 2013 {IEEE/RSJ} International Conference on Intelligent
+  Robots and Systems}, pages 1640--1647, 2013.
+
+\bibitem{HendersonPhD}
+Matthew Henderson.
+\newblock {\em Recovering From Errors in Conversational Dialogue Systems}.
+\newblock PhD thesis, University of Edinburgh, 2011.
+
+\bibitem{LangACL-09}
+Percy Liang, Michael~I. Jordan, and Dan Klein.
+\newblock Learning semantic correspondences with less supervision.
+\newblock In Keh-Yih Su, Jian Su, and Janyce Wiebe, editors, {\em Proceedings
+  of the 47th Annual Meeting of the Association for Computational Linguistics
+  and the 4th International Joint Conference on Natural Language Processing},
+  pages 91--99, 2009.
+
+\bibitem{LiangetalCL-13}
+Percy Liang, Michael~I. Jordan, and Dan Klein.
+\newblock Learning dependency-based compositional semantics.
+\newblock {\em Computational Linguistics}, 39:389--446, 2013.
+
+\bibitem{LitmanandAllenCS-87}
+Diane~J. Litman and James~F. Allen.
+\newblock A plan recognition model for subdialogues in conversations.
+\newblock {\em Cognitive Science}, 11:163--200, 1987.
+
+\bibitem{McRoyandHirstAAAI-93}
+Susan McRoy and Graeme Hirst.
+\newblock Misunderstanding and the negotiation of meaning.
+\newblock Technical report, AAAI Technical Report FS-93-05, 1993.
+
+\bibitem{McRoy-KBS-95}
+Susan~W. McRoy.
+\newblock Misunderstanding and the negotiation of meaning using abduction.
+\newblock {\em Knowledge-Based Systems}, 8:126--134, 1995.
+
+\bibitem{RussellandNorvig03}
+Stuart Russell and Peter Norvig.
+\newblock {\em Artificial Intelligence: A Modern Approach}.
+\newblock Second edition, Prentice Hall, Upper Saddle River, NJ, 2003.
+
+\bibitem{SchatzmannetalKER-06}
+Jost Schatzmann, Karl Weilhammer, Matt Stuttle, and Steve Young.
+\newblock A survey of statistical user simulation techniques for
+  reinforcement-learning of dialogue management strategies.
+\newblock {\em The Knowledge Engineering Review}, 21:97--126, 2006.
+
+\bibitem{SinghetalNIPS-99}
+Satinder~P. Singh, Michael~J. Kearns, Diane~J. Litman, and Marilyn~A. Walker.
+\newblock Reinforcement learning for spoken dialogue systems.
+\newblock In {\em Advances in Neural Information Processing Systems 12}, pages
+  956--962, 1999.
+
+\bibitem{SiskindAIR-95}
+J.M. Siskind.
+\newblock Grounding language in perception.
+\newblock {\em Artificial Intelligence Review}, 8:1995, 371-391.
+
+\bibitem{SiskindCOGNITION-96}
+J.M. Siskind.
+\newblock A computational study of cross-situational techniques for learning
+  word-to-meaning mappings.
+\newblock {\em Cognition}, 61:1996, 39-91.
+
+\bibitem{SocheretalACL-13}
+Richard Socher, John Bauer, Christopher~D. Manning, and Andrew~Y. Ng.
+\newblock Parsing with compositional vector grammars.
+\newblock In {\em Proceedings of the 51st Annual Meeting of the Association for
+  Computational Linguistics}, Stroudsburg, PA, USA, 2013. Association for
+  Computational Linguistics.
+
+\bibitem{SocheretalNIPS-11}
+Richard Socher, Eric~H. Huang, Jeffrey Pennington, Andrew~Y. Ng, and
+  Christopher~D. Manning.
+\newblock Dynamic pooling and unfolding recursive autoencoders for paraphrase
+  detection.
+\newblock In John Shawe-Taylor, Richard~S. Zemel, Peter~L. Bartlett, Fernando
+  C.~N. Pereira, and Kilian~Q. Weinberger, editors, {\em Advances in Neural
+  Information Processing Systems 24}, pages 801--809. MIT Press, 2011.
+
+\bibitem{SocheretalEMNLP-12}
+Richard Socher, Brody Huval, Christopher~D. Manning, and Andrew~Y. Ng.
+\newblock Semantic compositionality through recursive matrix-vector spaces.
+\newblock In {\em Proceedings of the 2012 Conference on Empirical Methods in
+  Natural Language Processing}. Association for Computational Linguistics,
+  2012.
+
+\bibitem{SocheretalEMNLP-13}
+Richard Socher, Alex Perelygin, Jean~Y. Wu, Jason Chuang, Christopher~D.
+  Manning, Andrew~Y. Ng, and Christopher Potts.
+\newblock Recursive deep models for semantic compositionality over a sentiment
+  treebank.
+\newblock In {\em Proceedings of the 2013 Conference on Empirical Methods in
+  Natural Language Processing}, pages 1631--1642. Association for Computational
+  Linguistics, Stroudsburg, PA, USA, 2013.
+
+\bibitem{WalkeretalACL-97}
+Marilyn~A. Walker, Diane~J. Litman, Candace~A. Kamm, and Alicia Abella.
+\newblock {PARADISE:} {A} framework for evaluating spoken dialogue agents.
+\newblock In {\em 35th Annual Meeting of the Association for Computational
+  Linguistics}, pages 271--280, 1997.
+
+\bibitem{YoungetalIEEE-13}
+S.~Young, M.~Gasic, B.~Thomson, and J.D. Williams.
+\newblock {POMDP}-based statistical spoken dialog systems: A review.
+\newblock {\em Proceedings of the {IEEE}}, 101:1160--1179, 2013.
+
+\end{thebibliography}
